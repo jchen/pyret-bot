@@ -1,0 +1,27 @@
+{
+
+  "name": "PyretBot",
+
+  "description": "A bot that runs Pyret in Discord.",
+
+  "version": "0.0.1",
+
+  "main": "bot.js",
+
+  "scripts": {
+
+    "start": "node bot.js"
+
+  },
+
+  "dependencies": {
+
+    "discord.js": "12.3.0",
+
+    "request": "2.88.2",
+
+    "pyret-npm": "0.0.18"
+
+  }
+
+}
