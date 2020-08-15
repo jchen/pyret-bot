@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const fs = require('fs');
-const { exec } = require('child_process');
 
 bot.login(process.env.BOT_TOKEN); // BOT_TOKEN is the Client Secret
 
@@ -25,6 +24,7 @@ bot.on('message', msg => {
     var outstring = "```";
 
     // Executes Pyret file.
+    const { exec } = require('child_process');
     exec('pyret ' + filename, (err, stdout, stderr) => {
       if (err) {
         //some err occurred
