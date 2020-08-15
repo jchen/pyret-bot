@@ -25,7 +25,7 @@ bot.on('message', msg => {
     var outstring = "```";
 
     // Executes Pyret file.
-    exec('node_modules/.bin/pyret ' + filename, (err, stdout, stderr) => {
+    exec('pyret ' + filename, (err, stdout, stderr) => {
       if (err) {
         //some err occurred
         console.error(err);
