@@ -16,6 +16,9 @@ bot.on('ready', () => {
   // Runs a test program to itialize the instance of Pyret.
   const { exec } = require('child_process');
   exec(`pyret test.arr`, (err, stdout, stderr) => {
+    if (err) {
+      console.error(err);
+    }
     console.log("Pyret initialized!")
   });
 });
@@ -32,7 +35,7 @@ bot.on('message', msg => {
 
       // Parses input.
       const input = msg.content.split("```");
-      const code = input[1];
+      const code = input[1] + "\nprint(\'\\n\')"; // Adds a line break for better print statements
       const filename = msg.id + ".arr";
 
       // Writes Pyret file.
