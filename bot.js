@@ -4,19 +4,27 @@ const fs = require('fs');
 
 bot.login(process.env.BOT_TOKEN); // BOT_TOKEN is the Client Secret
 
+// Runs a test program to itialize the instance of Pyret.
+const { exec } = require('child_process');
+exec(`pyret test.arr`, (err, stdout, stderr) => {
+  console.log("Pyret initialized!")
+});
+
 bot.on('ready', () => {
+  // Logs that bot is online.
   console.info(`Logged in as ${bot.user.tag}!`);
+
+  // Sets status.
   bot.user.setStatus('available');
   bot.user.setPresence({
-        game: {
-            name: 'with functions (!arr)',
-            type: "PLAYING",
-        }
-    });
+    game: {
+      name: 'with functions (!arr)',
+      type: "PLAYING",
+    }
+  });
 });
 
 bot.on('message', msg => {
-
   // Checks if message starts with !pyret or !arr
   if (msg.content.startsWith('!pyret') || msg.content.startsWith('!arr')) {
 
