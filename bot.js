@@ -6,38 +6,66 @@ bot.login(process.env.BOT_TOKEN); // BOT_TOKEN is the Client Secret
 
 bot.on('ready', () => {
   console.info(`Logged in as ${bot.user.tag}!`);
+  bot.user.setStatus('available');
+  bot.user.setPresence({
+        game: {
+            name: 'with functions (!arr)',
+            type: "PLAYING",
+        }
+    });
 });
 
 bot.on('message', msg => {
+
+  // Checks if message starts with !pyret or !arr
   if (msg.content.startsWith('!pyret') || msg.content.startsWith('!arr')) {
-    msg.reply('running code...');
-    const input = msg.content.split("```");
-    const code = input[1];
-    const filename = msg.id + ".arr"
 
-    // Writes Pyret file.
-    fs.writeFile(filename, code, function (err) {
-      if (err) return console.log(err);
-      console.log('Wrote code to .arr file!');
-    });
+    // Wraps code execution and parsing within reply promise to eliminate blocking
+    msg.reply('running code...').then(function(reply, _) {
 
-    var outstring = "```";
+      // Reply content.
+      var content = reply.content;
 
-    // Executes Pyret file.
-    const { exec } = require('child_process');
-    exec('pyret ' + filename, (err, stdout, stderr) => {
-      if (err) {
-        //some err occurred
-        console.error(err);
-        msg.channel.send(`${err}`.replace(/\n\s*\n/g, '\n'));
-      }
+      // Parses input.
+      const input = msg.content.split("```");
+      const code = input[1];
+      const filename = msg.id + ".arr";
 
-      // entire stdout and stderr
-      console.log(`${stdout}`);
-      msg.channel.send(`${stdout}`.replace(/\r\s*\r/g, '\r'));
+      // Writes Pyret file.
+      fs.writeFile(filename, code, function (err) {
+        if (err) return console.log(err);
+        console.log('Wrote code to .arr file!');
+      });
 
-      console.log(`${stderr}`);
-      msg.channel.send(`${stderr}`.replace(/\r\s*\r/g, '\r'));
+      // Executes Pyret file by spawning child shell process.
+      const { exec } = require('child_process');
+      exec(`pyret ${filename}`, (err, stdout, stderr) => {
+        if (err) {
+          // some error occurred
+          console.error(err);
+          if (`${err}`.length > 0) {
+            content += `\`\`\`${err}\`\`\``;
+            reply.edit(content);
+          }
+        }
+
+        // entire stdout and stderr
+        console.log(`${stdout}`);
+        if (`${stdout}`.length > 0) {
+          content += `\`\`\`${stdout}\`\`\``;
+          reply.edit(content);
+        }
+
+        console.log(`${stderr}`);
+        if (`${stderr}`.length > 0) {
+          content += `\`\`\`${stderr}\`\`\``;
+          reply.edit(content);
+        }
+
+        // Edits the reply message status.
+        content = content.replace('running code...', 'code execution complete!');
+        reply.edit(content);
+      });
     });
   }
 });
