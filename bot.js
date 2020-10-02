@@ -9,7 +9,7 @@ bot.on('ready', () => {
   console.info(`Logged in as ${bot.user.tag}!`);
 
   // Sets status.
-  bot.user.setPresence({ activity: { name: 'with functions (!arr)' }, status: 'available' })
+  bot.user.setPresence({ activity: { name: 'with caterpillars (!arr)' }, status: 'available' })
   .then(console.log)
   .catch(console.error);
 
